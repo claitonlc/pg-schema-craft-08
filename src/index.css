@@ -1,0 +1,228 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PostgreSQL Database Diagram Editor Design System
+All colors MUST be HSL. Professional blue/purple theme for data modeling.
+*/
+
+@layer base {
+  :root {
+    /* Base colors - Clean professional palette */
+    --background: 218 25% 98%;
+    --foreground: 222 25% 15%;
+
+    /* Surface colors */
+    --card: 0 0% 100%;
+    --card-foreground: 222 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 25% 15%;
+
+    /* Primary - Professional blue for data/tech */
+    --primary: 225 73% 57%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 225 73% 52%;
+    --primary-glow: 225 73% 72%;
+
+    /* Secondary - Complementary purple */
+    --secondary: 248 53% 95%;
+    --secondary-foreground: 248 53% 25%;
+
+    /* Muted tones */
+    --muted: 218 25% 95%;
+    --muted-foreground: 218 15% 45%;
+
+    /* Accent - Vibrant purple for highlights */
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Interactive elements */
+    --border: 218 25% 85%;
+    --input: 218 25% 95%;
+    --ring: 225 73% 57%;
+
+    /* Canvas and diagram specific */
+    --canvas-background: 218 30% 99%;
+    --canvas-grid: 218 25% 92%;
+    --canvas-selection: 225 73% 57%;
+    
+    /* Table colors */
+    --table-background: 0 0% 100%;
+    --table-border: 218 25% 85%;
+    --table-header: 225 73% 97%;
+    --table-primary-key: 262 83% 95%;
+    --table-foreign-key: 142 71% 95%;
+    
+    /* Relationship lines */
+    --relationship-line: 225 73% 57%;
+    --relationship-hover: 262 83% 58%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(225 73% 57%), hsl(225 73% 72%));
+    --gradient-accent: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 73%));
+    --gradient-canvas: linear-gradient(180deg, hsl(218 30% 99%), hsl(218 25% 96%));
+
+    /* Shadows */
+    --shadow-table: 0 4px 16px hsl(225 73% 57% / 0.1);
+    --shadow-hover: 0 8px 32px hsl(225 73% 57% / 0.15);
+    --shadow-active: 0 0 0 3px hsl(225 73% 57% / 0.3);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease-out;
+
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 218 25% 97%;
+    --sidebar-foreground: 222 25% 25%;
+    --sidebar-primary: 225 73% 57%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 218 25% 93%;
+    --sidebar-accent-foreground: 222 25% 25%;
+    --sidebar-border: 218 25% 85%;
+    --sidebar-ring: 225 73% 57%;
+  }
+
+  .dark {
+    /* Dark mode - Professional dark theme */
+    --background: 222 25% 8%;
+    --foreground: 218 25% 95%;
+
+    --card: 222 25% 10%;
+    --card-foreground: 218 25% 95%;
+
+    --popover: 222 25% 10%;
+    --popover-foreground: 218 25% 95%;
+
+    --primary: 225 73% 62%;
+    --primary-foreground: 222 25% 8%;
+    --primary-hover: 225 73% 67%;
+    --primary-glow: 225 73% 77%;
+
+    --secondary: 222 25% 15%;
+    --secondary-foreground: 218 25% 85%;
+
+    --muted: 222 25% 12%;
+    --muted-foreground: 218 15% 65%;
+
+    --accent: 262 83% 63%;
+    --accent-foreground: 222 25% 8%;
+
+    --success: 142 71% 50%;
+    --warning: 38 92% 55%;
+    --destructive: 0 72% 56%;
+
+    --border: 222 25% 18%;
+    --input: 222 25% 15%;
+    --ring: 225 73% 62%;
+
+    /* Dark canvas */
+    --canvas-background: 222 25% 9%;
+    --canvas-grid: 222 25% 15%;
+    --canvas-selection: 225 73% 62%;
+    
+    --table-background: 222 25% 12%;
+    --table-border: 222 25% 18%;
+    --table-header: 225 73% 15%;
+    --table-primary-key: 262 83% 15%;
+    --table-foreign-key: 142 71% 15%;
+    
+    --relationship-line: 225 73% 62%;
+    --relationship-hover: 262 83% 63%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(225 73% 62%), hsl(225 73% 77%));
+    --gradient-accent: linear-gradient(135deg, hsl(262 83% 63%), hsl(262 83% 78%));
+    --gradient-canvas: linear-gradient(180deg, hsl(222 25% 9%), hsl(222 25% 12%));
+
+    --shadow-table: 0 4px 16px hsl(0 0% 0% / 0.3);
+    --shadow-hover: 0 8px 32px hsl(0 0% 0% / 0.4);
+    --shadow-active: 0 0 0 3px hsl(225 73% 62% / 0.4);
+
+    --sidebar-background: 222 25% 7%;
+    --sidebar-foreground: 218 25% 85%;
+    --sidebar-primary: 225 73% 62%;
+    --sidebar-primary-foreground: 222 25% 8%;
+    --sidebar-accent: 222 25% 12%;
+    --sidebar-accent-foreground: 218 25% 85%;
+    --sidebar-border: 222 25% 15%;
+    --sidebar-ring: 225 73% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Canvas styles */
+  .diagram-canvas {
+    background: var(--gradient-canvas);
+  }
+
+  .diagram-grid {
+    background-image: 
+      radial-gradient(circle at 1px 1px, hsl(var(--canvas-grid)) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  /* Table node animations */
+  .table-node {
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-table);
+  }
+
+  .table-node:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  .table-node.selected {
+    box-shadow: var(--shadow-active);
+  }
+
+  /* Relationship animations */
+  .react-flow__edge-path {
+    transition: var(--transition-fast);
+  }
+
+  .react-flow__edge:hover .react-flow__edge-path {
+    stroke-width: 3;
+  }
+
+  /* Custom scrollbars */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
