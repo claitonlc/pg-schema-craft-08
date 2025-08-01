@@ -34,6 +34,7 @@ interface DiagramCanvasProps {
   onUpdateRelationships?: (relationships: any[]) => void;
   showHelp?: boolean;
   onCloseHelp?: () => void;
+  activeSchema?: string;
 }
 
 const DiagramCanvasInner = ({ 
@@ -42,7 +43,8 @@ const DiagramCanvasInner = ({
   relationships = [],
   onUpdateRelationships,
   showHelp = false,
-  onCloseHelp
+  onCloseHelp,
+  activeSchema
 }: DiagramCanvasProps) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
 
@@ -72,6 +74,11 @@ const DiagramCanvasInner = ({
     setNodes(newNodes);
   }, [tables, setNodes]);
 
+  // Update edges when relationships change
+  React.useEffect(() => {
+    setEdges(relationships || []);
+  }, [relationships, setEdges]);
+
   const onConnect = useCallback((params: Connection) => {
     if (params.source && params.target && params.source !== params.target) {
       // Find source and target tables
@@ -79,19 +86,45 @@ const DiagramCanvasInner = ({
       const targetTable = tables.find(t => t.id === params.target);
       
       if (sourceTable && targetTable) {
+        // Get schema-specific color
+        const getSchemaColor = (schema: string) => {
+          const colors = {
+            'public': 'hsl(var(--schema-public))',
+            'auth': 'hsl(var(--schema-auth))',
+            'admin': 'hsl(var(--schema-admin))',
+            'api': 'hsl(var(--schema-api))',
+            'storage': 'hsl(var(--schema-storage))',
+            'realtime': 'hsl(var(--schema-realtime))',
+          };
+          return colors[schema] || 'hsl(var(--schema-public))';
+        };
+        
+        const sourceSchema = sourceTable.schema || 'public';
+        const targetSchema = targetTable.schema || 'public';
+        const schemaColor = getSchemaColor(sourceSchema);
+        
         // Add relationship info to the connection data
         const newEdge = {
           ...params,
           type: 'smoothstep',
-          style: { stroke: 'hsl(var(--relationship-line))', strokeWidth: 2 },
+          style: { 
+            stroke: schemaColor, 
+            strokeWidth: 3,
+            strokeDasharray: sourceSchema === targetSchema ? '0' : '8,4',
+            opacity: activeSchema && (sourceSchema !== activeSchema && targetSchema !== activeSchema) ? 0.3 : 1,
+            filter: sourceSchema === targetSchema && activeSchema === sourceSchema ? 'drop-shadow(0 0 8px currentColor)' : 'none'
+          },
           markerEnd: {
             type: 'arrowclosed',
-            color: 'hsl(var(--relationship-line))',
+            color: schemaColor,
+            width: 20,
+            height: 20,
           },
           data: {
             sourceTable: sourceTable.name,
             targetTable: targetTable.name,
-            type: 'foreign_key'
+            type: 'foreign_key',
+            schema: activeSchema
           }
         };
         
@@ -158,7 +191,7 @@ const DiagramCanvasInner = ({
           <div className="bg-card/95 backdrop-blur-md border border-border/50 rounded-lg px-3 py-2 text-xs text-muted-foreground shadow-sm">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-              <span className="font-medium">PostgreSQL Editor</span>
+              <span className="font-medium">Schema: {activeSchema || 'Todos'}</span>
               <span className="text-border">•</span>
               <span>{tables.length} tabela{tables.length !== 1 ? 's' : ''}</span>
               <span className="text-border">•</span>

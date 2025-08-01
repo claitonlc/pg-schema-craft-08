@@ -37,6 +37,8 @@ interface SchemaProjectSidebarProps {
   selectedTable?: Table | null;
   onTableSelect: (table: Table) => void;
   onAddTable: () => void;
+  activeSchema?: string;
+  onSchemaSelect?: (schema: string) => void;
 }
 
 export function SchemaProjectSidebar({ 
@@ -44,12 +46,16 @@ export function SchemaProjectSidebar({
   tables, 
   selectedTable, 
   onTableSelect, 
-  onAddTable 
+  onAddTable,
+  activeSchema: externalActiveSchema = '',
+  onSchemaSelect
 }: SchemaProjectSidebarProps) {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const [searchFilter, setSearchFilter] = useState('');
-  const [activeSchema, setActiveSchema] = useState<string>('');
+  const [internalActiveSchema, setInternalActiveSchema] = useState<string>('');
+  
+  const activeSchema = externalActiveSchema || internalActiveSchema;
 
   // Group tables by schema
   const schemaGroups = useMemo(() => {
@@ -89,8 +95,16 @@ export function SchemaProjectSidebar({
   const schemas = Object.keys(filteredSchemaGroups);
   
   // Set active schema if not set
+  const handleSchemaChange = (schema: string) => {
+    if (onSchemaSelect) {
+      onSchemaSelect(schema);
+    } else {
+      setInternalActiveSchema(schema);
+    }
+  };
+  
   if (!activeSchema && schemas.length > 0) {
-    setActiveSchema(schemas[0]);
+    handleSchemaChange(schemas[0]);
   }
 
   const getTableStats = (table: Table) => {
@@ -102,16 +116,29 @@ export function SchemaProjectSidebar({
   };
 
   const getSchemaColor = (schema: string) => {
-    const colors = [
-      'bg-blue-500',
-      'bg-green-500', 
-      'bg-purple-500',
-      'bg-orange-500',
-      'bg-pink-500',
-      'bg-cyan-500'
-    ];
-    const index = schemas.indexOf(schema) % colors.length;
-    return colors[index];
+    const colorClasses = {
+      'public': 'bg-blue-500',
+      'auth': 'bg-purple-500',
+      'admin': 'bg-green-500',
+      'api': 'bg-orange-500',
+      'storage': 'bg-red-500',
+      'realtime': 'bg-teal-500'
+    };
+    return colorClasses[schema] || 'bg-blue-500';
+  };
+  
+  const getSchemaColorActive = (schema: string, isActive: boolean) => {
+    if (!isActive) return getSchemaColor(schema);
+    
+    const activeColorClasses = {
+      'public': 'bg-blue-600 ring-2 ring-blue-300',
+      'auth': 'bg-purple-600 ring-2 ring-purple-300',
+      'admin': 'bg-green-600 ring-2 ring-green-300',
+      'api': 'bg-orange-600 ring-2 ring-orange-300',
+      'storage': 'bg-red-600 ring-2 ring-red-300',
+      'realtime': 'bg-teal-600 ring-2 ring-teal-300'
+    };
+    return activeColorClasses[schema] || 'bg-blue-600 ring-2 ring-blue-300';
   };
 
   if (collapsed) {
@@ -150,7 +177,7 @@ export function SchemaProjectSidebar({
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <div className="flex flex-col items-center py-2">
-                      <div className={cn("w-3 h-3 rounded-full mb-1", getSchemaColor(schema))} />
+                      <div className={cn("w-3 h-3 rounded-full mb-1 transition-all", getSchemaColorActive(schema, activeSchema === schema))} />
                       <span className="text-xs text-sidebar-foreground/70 writing-mode-vertical">
                         {filteredSchemaGroups[schema]?.length || 0}
                       </span>
@@ -217,18 +244,28 @@ export function SchemaProjectSidebar({
 
         {/* Schema Tabs */}
         {schemas.length > 0 && (
-          <Tabs value={activeSchema} onValueChange={setActiveSchema} className="flex-1">
+          <Tabs value={activeSchema} onValueChange={handleSchemaChange} className="flex-1">
             <div className="px-4 py-2 border-b border-sidebar-border">
               <TabsList className="grid w-full grid-cols-1 gap-1 bg-sidebar-accent/30">
                 {schemas.map((schema) => (
                   <TabsTrigger 
                     key={schema} 
                     value={schema}
-                    className="flex items-center gap-2 text-xs data-[state=active]:bg-sidebar-accent data-[state=active]:text-sidebar-accent-foreground"
+                    className={cn(
+                      "flex items-center gap-2 text-xs transition-all",
+                      "data-[state=active]:bg-sidebar-accent data-[state=active]:text-sidebar-accent-foreground",
+                      "data-[state=active]:shadow-sm data-[state=active]:border-l-2",
+                      schema === 'public' && "data-[state=active]:border-l-blue-500",
+                      schema === 'auth' && "data-[state=active]:border-l-purple-500",
+                      schema === 'admin' && "data-[state=active]:border-l-green-500",
+                      schema === 'api' && "data-[state=active]:border-l-orange-500",
+                      schema === 'storage' && "data-[state=active]:border-l-red-500",
+                      schema === 'realtime' && "data-[state=active]:border-l-teal-500"
+                    )}
                   >
-                    <div className={cn("w-3 h-3 rounded-full", getSchemaColor(schema))} />
+                    <div className={cn("w-3 h-3 rounded-full transition-all", getSchemaColorActive(schema, activeSchema === schema))} />
                     <Folder className="h-3 w-3" />
-                    <span className="truncate">{schema}</span>
+                    <span className="truncate font-medium">{schema}</span>
                     <Badge variant="secondary" className="ml-1 h-4 text-xs">
                       {filteredSchemaGroups[schema]?.length || 0}
                     </Badge>

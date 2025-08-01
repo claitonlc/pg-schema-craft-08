@@ -24,6 +24,8 @@ interface MainHeaderProps {
   onImportSQL: (sql: string) => void;
   onLoadProject: (project: DatabaseProject) => void;
   onShowHelp: () => void;
+  activeSchema?: string;
+  totalTables?: number;
 }
 
 export function MainHeader({
@@ -36,6 +38,8 @@ export function MainHeader({
   onImportSQL,
   onLoadProject,
   onShowHelp,
+  activeSchema,
+  totalTables,
 }: MainHeaderProps) {
   const [showImportDialog, setShowImportDialog] = useState(false);
 
@@ -54,7 +58,11 @@ export function MainHeader({
               <div className="hidden sm:block">
                 <h1 className="font-bold text-foreground text-base tracking-tight">{projectName}</h1>
                 <p className="text-xs text-muted-foreground font-medium">
-                  {tablesCount} tabela{tablesCount !== 1 ? 's' : ''} • {relationshipsCount} relacionamento{relationshipsCount !== 1 ? 's' : ''}
+                  {activeSchema && totalTables ? (
+                    <>Schema: {activeSchema} • {tablesCount}/{totalTables} tabelas • {relationshipsCount} relacionamento{relationshipsCount !== 1 ? 's' : ''}</>
+                  ) : (
+                    <>{tablesCount} tabela{tablesCount !== 1 ? 's' : ''} • {relationshipsCount} relacionamento{relationshipsCount !== 1 ? 's' : ''}</>
+                  )}
                 </p>
               </div>
             </div>

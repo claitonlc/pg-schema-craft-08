@@ -67,6 +67,14 @@ All colors MUST be HSL. Professional blue/purple theme for data modeling.
     /* Relationship lines */
     --relationship-line: 225 73% 57%;
     --relationship-hover: 262 83% 58%;
+    
+    /* Schema colors */
+    --schema-public: 225 73% 57%;
+    --schema-auth: 262 83% 58%;
+    --schema-admin: 142 71% 45%;
+    --schema-api: 38 92% 50%;
+    --schema-storage: 0 72% 51%;
+    --schema-realtime: 174 62% 47%;
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(225 73% 57%), hsl(225 73% 72%));
@@ -141,6 +149,14 @@ All colors MUST be HSL. Professional blue/purple theme for data modeling.
     
     --relationship-line: 225 73% 62%;
     --relationship-hover: 262 83% 63%;
+    
+    /* Schema colors - Dark mode */
+    --schema-public: 225 73% 62%;
+    --schema-auth: 262 83% 63%;
+    --schema-admin: 142 71% 50%;
+    --schema-api: 38 92% 55%;
+    --schema-storage: 0 72% 56%;
+    --schema-realtime: 174 62% 52%;
 
     --gradient-primary: linear-gradient(135deg, hsl(225 73% 62%), hsl(225 73% 77%));
     --gradient-accent: linear-gradient(135deg, hsl(262 83% 63%), hsl(262 83% 78%));
@@ -203,7 +219,23 @@ All colors MUST be HSL. Professional blue/purple theme for data modeling.
   }
 
   .react-flow__edge:hover .react-flow__edge-path {
-    stroke-width: 3;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
+  /* Schema filtering animations */
+  .schema-tab-active {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-active);
+  }
+
+  /* Smooth schema transitions */
+  .react-flow__node {
+    transition: var(--transition-smooth);
+  }
+
+  .react-flow__edge {
+    transition: var(--transition-smooth);
   }
 
   /* Custom scrollbars */
